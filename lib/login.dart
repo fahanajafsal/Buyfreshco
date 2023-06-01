@@ -1,11 +1,17 @@
 
 
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+//import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hello_world/Fpassword.dart';
 import 'package:hello_world/counter/valunteer/valunteerhome.dart';
 import 'package:hello_world/homescreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'api.dart';
+import 'choose.dart';
 import 'counter/counterhome.dart';
 import 'godown/goddownhome.dart';
 import 'register.dart';
@@ -19,12 +25,82 @@ class login extends StatefulWidget {
 
 class _loginState extends State<login> {
 String user="user";
-String counter="counterhome";
-String goddown="goddownhome";
-String volunteer="volunteerhome";
+String counter="counter";
+String goddown="goddown";
+String volunteer="valunteer";
+String role="";
+String status="";
+String ststatus="1";
+bool   _isLoading = false;
+late SharedPreferences localStorage;
 TextEditingController userController=TextEditingController();
 TextEditingController pwdController=TextEditingController();
+_pressLoginButton() async {
+  setState(() {
+    _isLoading = true;
+  });
+  var data = {
+    'username': userController.text.trim(), //username for email
+    'password': pwdController.text.trim()
+  };
+  var res = await Api().authData(data,'/api/user_login');
+  var body = json.decode(res.body);
 
+  if (body['success'] == true) {
+    print(body);
+
+    role = body['data']['role'];
+    status =  body['data']['l_status'];
+    print("status${status}");
+    print("st${ststatus}");
+    print("role${role}");
+    print("counter${counter}");
+    print("valunteer${volunteer}");
+    print("goddown${goddown}");
+
+    localStorage = await SharedPreferences.getInstance();
+    localStorage.setString('role', role.toString());
+    localStorage.setInt('login_id', body['data']['login_id']);
+
+    print('login_id ${body['data']['login_id']}');
+    print('user_id ${body['data']['user_id']}');
+
+
+    if (user == role ) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => homescreen()));
+    } else if (counter == role &&
+        ststatus == status){
+    Navigator.of(context).push(MaterialPageRoute(
+    builder: (context) => counterhome(),
+    ));
+    }
+    else if (goddown == role &&
+        status == "1"){
+    Navigator.of(context).push(MaterialPageRoute(
+    builder: (context) => goddownhome(),
+    ));
+    }
+    else if (volunteer == role &&
+        status == "1")  {
+    Navigator.of(context).push(MaterialPageRoute(
+    builder: (context) => valunteerhome(),
+    ));
+    }else {
+    /*  Fluttertoast.showToast(
+        msg: "Please wait for admin approval",
+        backgroundColor: Colors.grey,
+      );*/
+    }
+
+
+  } else {
+   /* Fluttertoast.showToast(
+      msg: body['message'].toString(),
+      backgroundColor: Colors.grey,
+    );*/
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -85,26 +161,9 @@ TextEditingController pwdController=TextEditingController();
          child: Text("forget password?",style: TextStyle(fontSize: 14),)),
        ElevatedButton(
          child: Text("Login",style: TextStyle(color: Colors.white),),
-        
+
         onPressed: (){
-          if (pwdController.text == user) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => homescreen()));
-      } else if (pwdController.text == counter) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => counterhome()));
-      }
-       else if (pwdController.text == goddown) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => goddownhome()));
-      }
-       else if(pwdController.text == volunteer) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => valunteerhome()));
-      }
+          _pressLoginButton();
         
         },
        style:ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),primary: Colors.blue,fixedSize: Size(300, 50)),
@@ -116,7 +175,7 @@ TextEditingController pwdController=TextEditingController();
           const Text('Does not have an account?',style:TextStyle(fontSize: 16),),
           SizedBox(width: 10,),
 TextButton(onPressed: (){
-  Navigator.push(context, MaterialPageRoute(builder: (context)=>register(),));
+  Navigator.push(context, MaterialPageRoute(builder: (context)=>choose(),));
 },
  child: const Text('Register Here',style: TextStyle(fontSize: 16),),
  ),

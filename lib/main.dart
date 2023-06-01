@@ -23,6 +23,7 @@ import 'package:hello_world/payment.dart';
 
 import 'package:hello_world/profile.dart';
 import 'package:hello_world/register.dart';
+import 'package:hello_world/splash.dart';
 import 'package:hello_world/success.dart';
 import 'package:hello_world/user/wait.dart';
 import 'package:hello_world/welcome.dart';
@@ -42,8 +43,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(primaryColor: Colors.purple),
     debugShowCheckedModeBanner: false,
-      home:cregister()
+      home:Splash()
     );
   }
 }

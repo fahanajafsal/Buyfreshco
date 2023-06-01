@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+//import 'package:fluttertoast/fluttertoast.dart';
 
 import 'api.dart';
 import 'homescreen.dart';
@@ -38,32 +38,32 @@ class _registerState extends State<register> {
       "address": addresscontroller.text.trim(),
       "place": placecontroller.text.trim(),
       "email": emailcontroller.text.trim(),
-      "phone number": phonecontroller.toString(),
-      "gender": gendercontroller.text.trim(),
+      "phone_number": phonecontroller.text,
+      "gender": gender.toString(),
       "username": usernamecontroller.text,
       "password": passwordcontroller.text,
 
     };
-    print("patient data${data}");
-    var res = await Api().authData(data,'api/patient_register');
+    print("user data${data}");
+    var res = await Api().authData(data,'/api/user_register');
     var body = json.decode(res.body);
-    print('res${res}');
+    print('body${body}');
     if(body['success']==true)
     {
-      Fluttertoast.showToast(
+      /*Fluttertoast.showToast(
         msg: body['message'].toString(),
         backgroundColor: Colors.grey,
-      );
+      );*/
 
       Navigator.push(context, MaterialPageRoute(builder: (context)=>login()));
 
     }
     else
     {
-      Fluttertoast.showToast(
+    /*  Fluttertoast.showToast(
         msg: body['message'].toString(),
         backgroundColor: Colors.grey,
-      );
+      );*/
 
     }
   }
@@ -128,6 +128,8 @@ class _registerState extends State<register> {
                             borderRadius: BorderRadius.circular(20),borderSide: BorderSide(color: Colors.purple)
                         ),
                         label: Text("Place"),
+                        hintText: "Enter your place",
+
                       )
 
                   ),
@@ -139,6 +141,7 @@ class _registerState extends State<register> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
                     keyboardType: TextInputType.number,
+                      controller: addresscontroller,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.person),
                           border: OutlineInputBorder(
@@ -212,6 +215,7 @@ class _registerState extends State<register> {
                         }
                       },
                       keyboardType: TextInputType.emailAddress,
+                      controller: emailcontroller,
 
                       decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.email),
@@ -238,6 +242,7 @@ class _registerState extends State<register> {
                     }
                   },
                       keyboardType: TextInputType.number,
+                      controller: phonecontroller,
                       decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.phone),
                           label: const Text("Phone Number"),
@@ -245,6 +250,26 @@ class _registerState extends State<register> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),borderSide: BorderSide(color: Colors.purple)
                           ))
+
+                  ),
+                ),
+
+
+
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                      keyboardType: TextInputType.number,
+                      controller: usernamecontroller,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.person),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),borderSide: BorderSide(color: Colors.purple)
+                        ),
+                        label: Text("username"),
+                        hintText: "Enter your username",
+                      )
 
                   ),
                 ),

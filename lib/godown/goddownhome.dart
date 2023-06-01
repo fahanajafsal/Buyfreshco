@@ -45,7 +45,7 @@ children: [
       children: [
          Image.asset("images/delivered.png",height: 80,),
          SizedBox(height: 10,),
-        Text("VIEW PRODUCTS",style: TextStyle(fontSize: 20,color: Colors.black),)
+        Text("VIEW CATEGORIES",style: TextStyle(fontSize: 20,color: Colors.black),)
       ],
     ),
   ),
